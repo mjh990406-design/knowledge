@@ -1,5 +1,5 @@
 // 새 기록은 이 목록에 추가합니다. 분야별 목차와 검색에 함께 반영됩니다.
-const notes=[{title:'일차함수, 기울기를 눈으로 이해하기',category:'수학',tags:['함수','그래프','SVG','인터랙티브'],description:'기울기와 절편을 바꿔 보며 그래프의 변화를 확인하는 예제입니다.',url:'notes/linear-function.html',type:'예제'}];
+const notes=[{title:'로그함수, 곡선이 그려지는 모습',category:'수학',tags:['로그함수','그래프','애니메이션'],description:'y = log₁₀(x) 곡선이 왼쪽에서 오른쪽으로 그려집니다.',url:'notes/log-function.html',type:'애니메이션',sections:[['experiment','로그함수 그래프']]}];
 const subjects=[['수학','함수, 대수, 기하, 확률'],['컴퓨터','프로그래밍, 자료구조, 시스템'],['과학','물리, 화학, 생명과학'],['인문·사회','역사, 철학, 사회'],['기타','분야를 넘나드는 주제']];
 const root=document.body.dataset.root||'./';
 const isHome=document.body.dataset.page==='home';
@@ -24,7 +24,7 @@ if(sidebar){
   notes.filter(note=>note.category===name).forEach((note,n)=>{
    const selected=!isHome&&location.pathname.endsWith('/'+note.url);
    const noteLink=el('a','note-link'+(selected?' current':''),(index+1)+'.'+(n+1)+' '+note.title);noteLink.href=root+note.url;if(selected)noteLink.setAttribute('aria-current','page');nav.append(noteLink);
-   if(selected){[['question','핵심 질문'],['experiment','직접 바꿔 보기'],['summary','내 말로 정리하기'],['review','복습 질문']].forEach(([id,text])=>{const anchor=el('a','section-link',text);anchor.href='#'+id;nav.append(anchor);});}
+   if(selected){(note.sections||[['question','핵심 질문'],['experiment','직접 바꿔 보기'],['summary','내 말로 정리하기'],['review','복습 질문']]).forEach(([id,text])=>{const anchor=el('a','section-link',text);anchor.href='#'+id;nav.append(anchor);});}
   });
  });
  sidebar.append(tools,title,nav,el('div','sidebar-foot','개인 공부 노트 · '+notes.length+'개의 기록'));
@@ -50,64 +50,3 @@ if(sidebar){
  }
 }
 const outlineToggle=document.querySelector('.outline-toggle');if(outlineToggle){outlineToggle.addEventListener('click',()=>{const outline=document.querySelector('#page-outline');outline.hidden=!outline.hidden;outlineToggle.setAttribute('aria-expanded',String(!outline.hidden));});}
-const slope=document.querySelector('#slope');
-if(slope){
- const intercept=document.querySelector('#intercept');
- const play=document.querySelector('#motion-play');
- const position=document.querySelector('#motion-position');
- const speed=document.querySelector('#motion-speed');
- let progress=0,playing=false,frame=null,lastTime=null;
- function visibleRange(a,b){
-  if(a===0)return[-5.5,5.5];
-  const bounds=[(-4.5-b)/a,(4.5-b)/a].sort((x,y)=>x-y);
-  return[Math.max(-5.5,bounds[0]),Math.min(5.5,bounds[1])];
- }
- function format(value){return(Math.abs(value)<0.005?0:value).toFixed(2);}
- function drawPoint(){
-  if(!position)return;
-  const a=Number(slope.value),b=Number(intercept.value);
-  const [start,end]=visibleRange(a,b),x=start+(end-start)*progress,y=a*x+b;
-  const px=250+30*x,py=180-30*y;
-  document.querySelector('#motion-dot').setAttribute('cx',String(px));
-  document.querySelector('#motion-dot').setAttribute('cy',String(py));
-  document.querySelector('#motion-halo').setAttribute('cx',String(px));
-  document.querySelector('#motion-halo').setAttribute('cy',String(py));
-  document.querySelector('#motion-guides').setAttribute('d',`M ${px} 180 V ${py} H 250`);
-  document.querySelector('#motion-trail').setAttribute('d',`M ${250+30*start} ${180-30*(a*start+b)} L ${px} ${py}`);
-  position.value=String(Math.round(progress*1000));
-  position.setAttribute('aria-valuetext',`x ${format(x)}, y ${format(y)}`);
-  document.querySelector('#motion-x').value=format(x);
-  document.querySelector('#motion-y').value=format(y);
- }
- function draw(){
-  const a=Number(slope.value),b=Number(intercept.value);
-  document.querySelector('#function-line').setAttribute('d',`M 70 ${180-30*(a*(-6)+b)} L 430 ${180-30*(a*6+b)}`);
-  document.querySelector('#intercept-dot').setAttribute('cy',String(180-30*b));
-  document.querySelector('#slope-value').value=String(a);document.querySelector('#intercept-value').value=String(b);
-  document.querySelector('#equation').textContent=`y = ${a}x ${b<0?'−':'+'} ${Math.abs(b)}`;
-  drawPoint();
- }
- function pause(){
-  playing=false;if(frame!==null)cancelAnimationFrame(frame);frame=null;lastTime=null;
-  if(play){play.textContent='▶ 재생';play.setAttribute('aria-pressed','false');}
- }
- function tick(time){
-  if(!playing)return;
-  if(lastTime!==null)progress=Math.min(1,progress+(time-lastTime)/8000*Number(speed.value));
-  lastTime=time;drawPoint();
-  if(progress>=1){pause();return;}
-  frame=requestAnimationFrame(tick);
- }
- if(play){
-  play.addEventListener('click',()=>{
-   if(playing){pause();return;}
-   if(progress>=1)progress=0;
-   playing=true;lastTime=null;play.textContent='Ⅱ 일시정지';play.setAttribute('aria-pressed','true');drawPoint();frame=requestAnimationFrame(tick);
-  });
-  document.querySelector('#motion-reset').addEventListener('click',()=>{pause();progress=0;drawPoint();});
-  position.addEventListener('input',()=>{pause();progress=Number(position.value)/1000;drawPoint();});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
- }
- function changeGraph(){pause();progress=0;draw();}
- slope.addEventListener('input',changeGraph);intercept.addEventListener('input',changeGraph);draw();
-}

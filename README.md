@@ -7,7 +7,7 @@
 - GitHub Pages 주소: https://mjh990406-design.github.io/knowledge/
 - 게시 폴더: `docs/`
 - 첫 화면: `docs/index.html`
-- 예제: `docs/notes/linear-function.html` (직접 만든 일차함수 시각화)
+- 예제: `docs/notes/log-function.html` (왼쪽에서 오른쪽으로 그려지는 로그함수 애니메이션)
 
 ## 기록 추가
 
