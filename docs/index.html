@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Knowledge · 공부의 연결</title>
+  <meta name="description" content="글과 그림, 직접 움직이는 예제로 이해를 쌓는 개인 지식 정원">
+  <link rel="stylesheet" href="assets/style.css"><script src="assets/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 이동</a>
+<aside>
+  <a class="brand" href="./index.html"><span class="brand-icon">k.</span>knowledge</a>
+  <p class="aside-note">배운 것을 연결하는 공간</p>
+  <nav aria-label="주요 메뉴"><a class="active" href="#library">모든 기록 <span>01</span></a><a href="#lab">시각화 실험실 <span>↗</span></a><a href="#guide">정리하는 방법 <span>↗</span></a></nav>
+  <div class="aside-bottom"><span class="dot"></span> 조금씩, 더 깊이.<br><small>PERSONAL KNOWLEDGE GARDEN</small></div>
+</aside>
+<main id="main">
+  <header><span>MY LEARNING SPACE</span><a href="https://github.com/mjh990406-design/knowledge">GitHub ↗</a></header>
+  <section class="intro">
+    <div><p class="eyebrow">생각을 담고, 이해를 넓히다</p><h1>공부의 흔적이<br>지식으로 연결되는 곳<span>.</span></h1><p class="lead">글로 정리하고, 그림으로 이해하고,<br>직접 움직여 보며 내 것으로 만듭니다.</p><a class="primary" href="#library">기록 둘러보기 <span>↓</span></a></div>
+    <svg class="garden" viewBox="0 0 360 310" role="img" aria-labelledby="garden-title"><title id="garden-title">메모, 그림, 실험을 잇는 지식의 연결망</title><g fill="none" stroke="#bac5b6" stroke-width="1.5"><path d="M180 155 70 75M180 155 294 65M180 155 290 245M180 155 65 250M70 75 294 65M65 250 290 245"/><circle cx="180" cy="155" r="105" stroke-dasharray="3 9"/></g><g fill="#fdfcf7" stroke="#bac5b6"><rect x="20" y="45" width="100" height="66" rx="12"/><rect x="245" y="35" width="95" height="66" rx="12"/><rect x="240" y="213" width="105" height="66" rx="12"/><rect x="17" y="218" width="100" height="66" rx="12"/></g><circle cx="180" cy="155" r="48" fill="#254f40"/><g text-anchor="middle" font-family="sans-serif" font-size="15" fill="#254f40"><text x="70" y="85">글 · 메모</text><text x="292" y="75">그림 · SVG</text><text x="292" y="253">실험 · HTML</text><text x="67" y="258">질문 · 복습</text><text x="180" y="161" fill="white" font-size="20">이해</text></g></svg>
+  </section>
+  <section id="library" class="library">
+    <div class="section-top"><div><p class="eyebrow">THE COLLECTION</p><h2>공부 기록</h2></div><label class="search"><span>⌕</span><input id="search" type="search" placeholder="제목, 개념, 태그 검색" aria-label="공부 기록 검색"></label></div>
+    <div id="filters" class="filters" aria-label="분야 선택"><button class="selected" aria-pressed="true" data-category="전체">전체</button><button aria-pressed="false" data-category="수학">수학</button><button aria-pressed="false" data-category="컴퓨터">컴퓨터</button><button aria-pressed="false" data-category="과학">과학</button><button aria-pressed="false" data-category="인문·사회">인문·사회</button><button aria-pressed="false" data-category="기타">기타</button></div>
+    <p id="results-count" class="muted" role="status"></p><div id="notes" class="notes"></div>
+    <noscript><p>검색과 그래프 조작에는 JavaScript가 필요합니다. <a href="notes/linear-function.html">일차함수 예제 읽기</a></p></noscript>
+  </section>
+  <section id="lab" class="lab"><div><p class="eyebrow">LEARN BY EXPLORING</p><h2>읽는 것을 넘어,<br>움직여 보며 이해하기.</h2><p>기울기를 바꾸면 그래프는 어떻게 달라질까요?<br>첫 예제에서 SVG와 HTML의 활용을 확인해 보세요.</p><a href="notes/linear-function.html">일차함수 실험 열기 →</a></div><div class="formula" aria-label="y는 a x 더하기 b">y = <em>a</em>x + b<small>개념 + 시각화 + 직접 실험</small></div></section>
+  <section id="guide"><p class="eyebrow">A SMALL ROUTINE</p><h2>하나의 기록, 세 가지 단계</h2><div class="steps"><div><b>01</b><h3>질문에서 시작하기</h3><p>무엇이 궁금했는지, 어디서 막혔는지 한 문장으로 적습니다.</p></div><div><b>02</b><h3>눈에 보이게 만들기</h3><p>설명에 이미지와 개념도, 조작 가능한 예제를 더합니다.</p></div><div><b>03</b><h3>다시 꺼내 보기</h3><p>내 말로 요약하고, 복습 질문으로 이해를 확인합니다.</p></div></div></section>
+  <footer>knowledge <span>오늘의 질문이 내일의 이해로.</span></footer>
+</main>
+</body></html>
