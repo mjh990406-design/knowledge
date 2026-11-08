@@ -51,4 +51,63 @@ if(sidebar){
 }
 const outlineToggle=document.querySelector('.outline-toggle');if(outlineToggle){outlineToggle.addEventListener('click',()=>{const outline=document.querySelector('#page-outline');outline.hidden=!outline.hidden;outlineToggle.setAttribute('aria-expanded',String(!outline.hidden));});}
 const slope=document.querySelector('#slope');
-if(slope){const intercept=document.querySelector('#intercept');function draw(){const a=Number(slope.value),b=Number(intercept.value);document.querySelector('#function-line').setAttribute('d',`M 70 ${180-30*(a*(-6)+b)} L 430 ${180-30*(a*6+b)}`);document.querySelector('#intercept-dot').setAttribute('cy',String(180-30*b));document.querySelector('#slope-value').value=String(a);document.querySelector('#intercept-value').value=String(b);document.querySelector('#equation').textContent=`y = ${a}x ${b<0?'−':'+'} ${Math.abs(b)}`;}slope.addEventListener('input',draw);intercept.addEventListener('input',draw);draw();}
+if(slope){
+ const intercept=document.querySelector('#intercept');
+ const play=document.querySelector('#motion-play');
+ const position=document.querySelector('#motion-position');
+ const speed=document.querySelector('#motion-speed');
+ let progress=0,playing=false,frame=null,lastTime=null;
+ function visibleRange(a,b){
+  if(a===0)return[-5.5,5.5];
+  const bounds=[(-4.5-b)/a,(4.5-b)/a].sort((x,y)=>x-y);
+  return[Math.max(-5.5,bounds[0]),Math.min(5.5,bounds[1])];
+ }
+ function format(value){return(Math.abs(value)<0.005?0:value).toFixed(2);}
+ function drawPoint(){
+  if(!position)return;
+  const a=Number(slope.value),b=Number(intercept.value);
+  const [start,end]=visibleRange(a,b),x=start+(end-start)*progress,y=a*x+b;
+  const px=250+30*x,py=180-30*y;
+  document.querySelector('#motion-dot').setAttribute('cx',String(px));
+  document.querySelector('#motion-dot').setAttribute('cy',String(py));
+  document.querySelector('#motion-halo').setAttribute('cx',String(px));
+  document.querySelector('#motion-halo').setAttribute('cy',String(py));
+  document.querySelector('#motion-guides').setAttribute('d',`M ${px} 180 V ${py} H 250`);
+  document.querySelector('#motion-trail').setAttribute('d',`M ${250+30*start} ${180-30*(a*start+b)} L ${px} ${py}`);
+  position.value=String(Math.round(progress*1000));
+  position.setAttribute('aria-valuetext',`x ${format(x)}, y ${format(y)}`);
+  document.querySelector('#motion-x').value=format(x);
+  document.querySelector('#motion-y').value=format(y);
+ }
+ function draw(){
+  const a=Number(slope.value),b=Number(intercept.value);
+  document.querySelector('#function-line').setAttribute('d',`M 70 ${180-30*(a*(-6)+b)} L 430 ${180-30*(a*6+b)}`);
+  document.querySelector('#intercept-dot').setAttribute('cy',String(180-30*b));
+  document.querySelector('#slope-value').value=String(a);document.querySelector('#intercept-value').value=String(b);
+  document.querySelector('#equation').textContent=`y = ${a}x ${b<0?'−':'+'} ${Math.abs(b)}`;
+  drawPoint();
+ }
+ function pause(){
+  playing=false;if(frame!==null)cancelAnimationFrame(frame);frame=null;lastTime=null;
+  if(play){play.textContent='▶ 재생';play.setAttribute('aria-pressed','false');}
+ }
+ function tick(time){
+  if(!playing)return;
+  if(lastTime!==null)progress=Math.min(1,progress+(time-lastTime)/8000*Number(speed.value));
+  lastTime=time;drawPoint();
+  if(progress>=1){pause();return;}
+  frame=requestAnimationFrame(tick);
+ }
+ if(play){
+  play.addEventListener('click',()=>{
+   if(playing){pause();return;}
+   if(progress>=1)progress=0;
+   playing=true;lastTime=null;play.textContent='Ⅱ 일시정지';play.setAttribute('aria-pressed','true');drawPoint();frame=requestAnimationFrame(tick);
+  });
+  document.querySelector('#motion-reset').addEventListener('click',()=>{pause();progress=0;drawPoint();});
+  position.addEventListener('input',()=>{pause();progress=Number(position.value)/1000;drawPoint();});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
+ }
+ function changeGraph(){pause();progress=0;draw();}
+ slope.addEventListener('input',changeGraph);intercept.addEventListener('input',changeGraph);draw();
+}
