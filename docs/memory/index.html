@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f8f8f1">
+  <title>반도체 메모리 지도 · 공부 정리</title>
+  <meta name="description" content="그림에서 컴퓨터 부품을 선택하고, 메모리 셀부터 SSD와 HBM까지 직접 조작하며 배웁니다.">
+  <link rel="stylesheet" href="atlas.css">
+  <script defer src="dram.js"></script>
+  <script defer src="storage.js"></script>
+  <script defer src="systems.js"></script>
+  <script defer src="atlas.js"></script>
+</head>
+<body>
+<a class="skip" href="#content">본문으로 이동</a>
+<header class="mast"><div class="wrap mast-inner">
+  <a class="identity" href="#map"><span class="micro-icon" aria-hidden="true"></span>메모리 지도</a>
+  <a class="home-link" href="../index.html">공부 정리 홈 ↗</a>
+</div></header>
+<main class="wrap" id="content" tabindex="-1">
+  <nav id="crumb" aria-label="현재 위치"></nav>
+  <div id="view"></div>
+  <dialog id="definition" aria-labelledby="term-name">
+    <h2 id="term-name"></h2>
+    <p id="term-text"></p>
+    <form method="dialog"><button autofocus>닫기</button></form>
+  </dialog>
+  <noscript><p>터치 실험을 사용하려면 JavaScript를 켜 주세요. <a href="../notes/ddr5-dimm.html">DDR5 공부 노트 읽기</a></p></noscript>
+</main>
+<footer class="wrap foot"><span>knowledge · 반도체 공부 정리</span><a href="#map">전체 지도 ↑</a></footer>
+</body></html>
