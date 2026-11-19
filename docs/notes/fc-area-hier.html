@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FC 면적 보고서 읽기 - knowledge</title><meta name="description" content="area.hier.rpt의 집계 범위와 중복 합산을 확인하는 방법입니다.">
+<link rel="stylesheet" href="../assets/style.css?v=4"><script src="../assets/app.js?v=semiconductor-1" defer></script>
+<style>.study-table{width:100%;border-collapse:collapse;font-size:14px}.study-table th,.study-table td{border:1px solid #ddd;padding:12px;text-align:left;vertical-align:top}.study-table th{background:#f5f7fa}.table-scroll{overflow-x:auto}.study-table{min-width:560px}.article pre{overflow-x:auto;padding:18px;background:#f5f7fa;line-height:1.7}.article pre code{background:none;padding:0}.article p,.article li{overflow-wrap:anywhere}.article h3{margin-top:26px}.article section{max-width:920px}.article .page-outline a{padding:3px 0}</style>
+</head><body data-root="../" data-page="article">
+<a class="skip" href="#main">본문으로 이동</a><aside id="sidebar" aria-label="공부 목차"><a href="../index.html">전체 목차</a></aside>
+<button class="mobile-menu" type="button" aria-controls="sidebar" aria-expanded="false">☰ 목차보기</button>
+<main id="main" class="reader article"><header class="breadcrumbs"><a href="../index.html">knowledge · 공부 정리</a><span>/</span><a href="../index.html?category=컴퓨터">컴퓨터</a><span>/ 반도체</span><a class="repo-link" href="https://github.com/mjh990406-design/knowledge/blob/main/notes/semiconductor/fc-area-hier.md">Markdown 원문 ↗</a></header>
+<div class="title-line"><h1>FC 면적 보고서 읽기</h1></div><p class="intro">area.hier.rpt의 집계 범위와 중복 합산을 확인하는 방법입니다.</p>
+<p class="article-meta">반도체 공부 노트 · 2026-11-19</p>
+<div class="callout">원본 보고서가 없는 상태의 조건부 해석 가이드입니다. 예시 수치는 실제 설계 결과가 아닙니다.</div>
+<nav class="page-outline" aria-label="이 글의 목차"><a href="#section-1">핵심 질문</a>
+<a href="#section-2">현재 확인 범위</a>
+<a href="#section-3">먼저 확인할 항목</a>
+<a href="#section-4">조건을 확인한 뒤 적용할 해석 원칙</a>
+<a href="#section-5">내 말로 요약</a>
+<a href="#section-6">복습 질문</a>
+<a href="#section-7">후속 검증에 필요한 근거</a></nav>
+<section id="section-1"><h2>핵심 질문</h2>
+<p><code>area.hier.rpt</code>에서 어떤 블록이 면적을 많이 차지하는지 어떻게 판단하나요?</p>
+</section>
+<section id="section-2"><h2>현재 확인 범위</h2>
+<p>요청에서는 FC를 Fusion Compiler 문맥으로 제시했습니다. 하지만 실제 <code>area.hier.rpt</code>, 생성 Tcl, 실행 로그, FC 버전은 제공되지 않았습니다. 따라서 이 파일의 열 이름·단위·집계 범위와 생성 명령은 확인되지 않았습니다.</p>
+<p>파일명의 <code>area</code>와 <code>hier</code>를 보면 계층별 면적 보고서일 가능성이 있지만, 이는 <strong>파일명에 근거한 추정</strong>입니다. 특정 명령이 자동으로 만드는 고정 파일명이라고 단정하지 않습니다.</p>
+</section>
+<section id="section-3"><h2>먼저 확인할 항목</h2>
+<div class="table-scroll"><table class="study-table"><thead><tr><th scope="col">확인 대상</th><th scope="col">확인 목적</th></tr></thead><tbody><tr><td>파일 헤더와 열 제목</td><td>보고서 종류, 디자인, 면적 단위 확인</td></tr><tr><td>생성 Tcl 및 로그</td><td>실제 명령과 옵션, 대상 블록 확인</td></tr><tr><td>FC 버전과 해당 버전 도움말</td><td>명령 옵션과 열 정의 확인</td></tr><tr><td>합성·배치·CTS·배선 등 실행 단계</td><td>서로 다른 단계의 결과를 섞어 비교하지 않기</td></tr><tr><td>라이브러리와 집계 대상</td><td>매크로·물리 전용 셀 등의 포함 여부 확인</td></tr><tr><td>계층 정의</td><td>하위 계층 포함 면적인지 직접 소속 셀 면적인지 확인</td></tr></tbody></table></div>
+<p><code>report_area</code> 관련 명령과 옵션은 설치된 버전의 도움말에서 확인할 후보입니다. 여기에는 실행·검증하지 않은 보고서 생성 명령을 정답처럼 제시하지 않습니다.</p>
+</section>
+<section id="section-4"><h2>조건을 확인한 뒤 적용할 해석 원칙</h2>
+<h3>상위·하위 계층을 중복 합산하지 않기</h3>
+<p>상위 행이 하위 블록을 포함하는 집계라면 상위와 하위 면적을 다시 더하면 중복 계산입니다.</p>
+<p>다음 수치는 원본 보고서가 아닌 설명용 가상 예시입니다. 세 값은 같은 단위이며, top이 하위 계층을 포함한다고 가정합니다.</p>
+<pre><code>top             1,000
+  u_a             600
+  u_b             300
+top 직접 소속     100</code></pre>
+<p>이 가정에서는 전체가 1,000이고, <code>u_a</code>의 비중은 60%입니다. <code>1,000 + 600 + 300</code>을 전체 면적으로 계산하면 안 됩니다. 반대로 각 행이 직접 소속 셀만 집계한다면 다른 합산 방식이 필요합니다.</p>
+<h3>셀 면적과 코어 면적을 구분하기</h3>
+<p>셀 면적 합계와 배치 영역의 크기는 서로 다른 지표입니다. 보고서가 무엇을 측정하는지 확인하지 않고 셀 면적을 die/core 면적이라고 부르면 안 됩니다.</p>
+<p><code>셀 면적 / 코어 면적</code>을 utilization으로 쓰려면 해당 흐름이 정의하는 분자·분모 및 제외 영역이 일치하는지 먼저 확인합니다. 단위 역시 파일명만 보고 µm²로 정하지 않습니다.</p>
+<h3>비교 조건을 맞추기</h3>
+<p>같은 계층, 실행 단계, 라이브러리, 집계 기준에서 이전 결과와 비교합니다. 차이가 나면 셀 구성 변화, 버퍼 삽입, 셀 크기 변경, 매크로 포함 여부 등을 원인 후보로 살펴봅니다. 이는 조사 후보이며 현재 설계에서 확인된 원인은 아닙니다.</p>
+</section>
+<section id="section-5"><h2>내 말로 요약</h2>
+<p>파일명보다 생성 명령과 헤더가 우선입니다. 계층별 면적은 집계 범위를 확인한 뒤 비교해야 하며, 상위·하위의 중복 합산을 피해야 합니다.</p>
+</section>
+<section id="section-6"><h2>복습 질문</h2>
+<ol>
+<li>top 면적과 모든 하위 블록 면적을 무조건 더하면 안 되는 이유는 무엇인가요?</li>
+<li>면적이 늘었다는 결론을 내리기 전에 어떤 비교 조건을 맞춰야 하나요?</li>
+<li>셀 면적 보고서만으로 코어 면적을 확정할 수 있나요?</li>
+</ol>
+</section>
+<section id="section-7"><h2>후속 검증에 필요한 근거</h2>
+<p>원본 보고서의 헤더와 일부 행, 보고서를 만든 Tcl 명령, FC 버전에 맞는 공식 명령 도움말이 필요합니다. 현재 문서는 해당 자료를 검증한 결과가 아니라 <strong>조건부 해석 가이드</strong>입니다.</p>
+</section>
+<footer class="page-footer"><a href="../index.html">전체 목차로</a><a href="ddr5-dimm.html">DDR5 DIMM 정리 →</a><a href="#main">맨 위로 ↑</a></footer>
+</main></body></html>
