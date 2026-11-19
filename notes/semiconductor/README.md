@@ -1,0 +1,19 @@
+# 반도체 공부 정리
+
+- [DDR5 DIMM: SPD Hub, PMIC/Buck, CKD/RCD/MDB](ddr5-dimm.md)
+- [Fusion Compiler: area.hier.rpt 확인과 해석](fc-area-hier.md)
+
+## 작성 범위와 근거
+
+작성일: 2026-11-19.
+
+요청에서 지정한 학습 주제를 정리했습니다. 전달된 「공부정리 일반」 대화에는 GitHub 정리 방식만 있고 기술 학습 원문은 없어, 과거 대화를 그대로 복원한 문서는 아닙니다.
+
+DDR5 문서는 제조사 공개 자료로 확인한 설명과 제품별 확인 사항을 구분합니다. FC 문서는 실제 보고서와 생성 스크립트가 없으므로 해석 절차와 조건부 예시를 제공합니다. 실제 설계 수치나 비공개 원문은 포함하지 않습니다.
+
+이 폴더는 Markdown 원문입니다. 웹사이트의 컴퓨터 분야 목차와 검색에서도 같은 내용을 읽을 수 있습니다.
+
+- [DDR5 웹 페이지](https://mjh990406-design.github.io/knowledge/notes/ddr5-dimm.html)
+- [FC 웹 페이지](https://mjh990406-design.github.io/knowledge/notes/fc-area-hier.html)
+
+원문을 수정할 때는 대응하는 `docs/notes/` HTML 페이지에도 반영합니다.
