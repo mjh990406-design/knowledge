@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DDR5 DIMM의 보조 칩과 전원 변환 - knowledge</title><meta name="description" content="SPD Hub, PMIC와 Buck, CKD·RCD·MDB의 역할을 구분합니다.">
+<link rel="stylesheet" href="../assets/style.css?v=4"><script src="../assets/app.js?v=semiconductor-1" defer></script>
+<style>.study-table{width:100%;border-collapse:collapse;font-size:14px}.study-table th,.study-table td{border:1px solid #ddd;padding:12px;text-align:left;vertical-align:top}.study-table th{background:#f5f7fa}.table-scroll{overflow-x:auto}.study-table{min-width:560px}.article pre{overflow-x:auto;padding:18px;background:#f5f7fa;line-height:1.7}.article pre code{background:none;padding:0}.article p,.article li{overflow-wrap:anywhere}.article h3{margin-top:26px}.article section{max-width:920px}.article .page-outline a{padding:3px 0}</style>
+</head><body data-root="../" data-page="article">
+<a class="skip" href="#main">본문으로 이동</a><aside id="sidebar" aria-label="공부 목차"><a href="../index.html">전체 목차</a></aside>
+<button class="mobile-menu" type="button" aria-controls="sidebar" aria-expanded="false">☰ 목차보기</button>
+<main id="main" class="reader article"><header class="breadcrumbs"><a href="../index.html">knowledge · 공부 정리</a><span>/</span><a href="../index.html?category=컴퓨터">컴퓨터</a><span>/ 반도체</span><a class="repo-link" href="https://github.com/mjh990406-design/knowledge/blob/main/notes/semiconductor/ddr5-dimm.md">Markdown 원문 ↗</a></header>
+<div class="title-line"><h1>DDR5 DIMM의 보조 칩과 전원 변환</h1></div><p class="intro">SPD Hub, PMIC와 Buck, CKD·RCD·MDB의 역할을 구분합니다.</p>
+<p class="article-meta">반도체 공부 노트 · 2026-11-19</p>
+<div class="callout">제조사 공개 자료를 바탕으로 정리했습니다. 특정 모듈의 실제 구성은 부품별 확인이 필요합니다.</div>
+<nav class="page-outline" aria-label="이 글의 목차"><a href="#section-1">핵심 질문</a>
+<a href="#section-2">자료로 확인한 개념</a>
+<a href="#section-3">제품별로 확인해야 할 사항</a>
+<a href="#section-4">내 말로 요약</a>
+<a href="#section-5">복습 질문</a></nav>
+<section id="section-1"><h2>핵심 질문</h2>
+<p>SPD Hub, PMIC, CKD, RCD, MDB는 각각 무엇을 담당하며, 모든 DDR5 DIMM에 함께 들어가나요?</p>
+</section>
+<section id="section-2"><h2>자료로 확인한 개념</h2>
+<div class="table-scroll"><table class="study-table"><thead><tr><th scope="col">부품</th><th scope="col">주된 역할</th><th scope="col">구분할 점</th></tr></thead><tbody><tr><td>SPD Hub</td><td>모듈 정보를 저장하고 관리용 통신을 지원</td><td>DRAM의 사용자 데이터 전송 경로와 구분</td></tr><tr><td>PMIC</td><td>모듈에 필요한 전압을 생성·조절</td><td>여러 전원 회로를 관리하는 IC</td></tr><tr><td>CKD</td><td>클라이언트 모듈의 클록을 재정렬·분배</td><td>CUDIMM·CSODIMM 등에 사용</td></tr><tr><td>RCD</td><td>서버 모듈의 명령·주소·클록·제어 신호를 버퍼링·재구동</td><td>RDIMM의 데이터 버퍼와 혼동하지 않음</td></tr><tr><td>MDB</td><td>MRDIMM의 여러 rank 데이터를 다중화</td><td>MRCD와 함께 사용하는 데이터 경로 부품</td></tr></tbody></table></div>
+<p>RCD는 명령·주소·클록·제어 경로, MDB는 데이터 경로를 담당합니다. MRDIMM에는 다중화 동작을 지원하는 MRCD가 사용됩니다. 따라서 CKD/RCD/MDB를 모든 DDR5 DIMM에 공통으로 들어가는 한 묶음으로 보면 안 됩니다. <a href="https://www.rambus.com/memory-interface-chips/ddr5-dimm-chipset/">Rambus 서버 칩셋</a>, <a href="https://www.rambus.com/blogs/complete-guide-to-ddr5-chipsets/">Rambus DIMM 구성 설명</a></p>
+<h3>SPD Hub</h3>
+<p>SPD는 Serial Presence Detect의 약자입니다. 시스템이 모듈의 특성을 파악하는 데 필요한 정보를 저장·전달합니다. 예를 들어 Renesas SPD5118은 1,024바이트 EEPROM과 Hub 기능, I²C/I³C 통신 인터페이스를 제공합니다. 온도 센서 유무와 지원 기능은 정확한 부품을 확인해야 합니다. <a href="https://www.renesas.com/en/products/spd5118">Renesas SPD5118</a></p>
+<p>SPD 정보를 읽는 관리 통신과 DRAM 데이터를 읽고 쓰는 고속 메모리 통신은 목적이 다릅니다.</p>
+<h3>PMIC와 Buck Converter</h3>
+<p>PMIC는 Power Management IC, Buck Converter는 입력보다 낮은 전압을 만드는 스위칭 전원 회로입니다. PMIC 안에는 여러 Buck 채널과 LDO 등이 포함될 수 있습니다. 예를 들어 Renesas P8900은 강압 스위칭 레귤레이터 4개와 LDO 3개를 제공합니다. 이 개수를 모든 DDR5 PMIC에 적용하면 안 됩니다. <a href="https://www.renesas.com/en/products/p8900">Renesas P8900</a></p>
+<p>Buck의 기본 동작은 다음과 같습니다.</p>
+<ol>
+<li>상측 스위치가 켜지면 인덕터 양단 전압에 의해 전류가 증가합니다.</li>
+<li>상측 스위치가 꺼지면 하측 스위치 또는 다이오드 경로로 전류가 이어지며 감소합니다.</li>
+<li>출력 커패시터는 전류 리플을 받아 출력 전압 변동을 줄입니다.</li>
+</ol>
+<p>이상적인 정상상태·연속전도모드(CCM)에서는 인덕터의 한 주기 평균 전압이 0이므로 다음 관계를 얻습니다.</p>
+<pre><code>D × (Vin − Vout) + (1 − D) × (−Vout) = 0
+Vout = D × Vin
+D = 상측 스위치 ON 시간 / 스위칭 주기</code></pre>
+<p>이 식은 손실을 무시한 근사입니다. 불연속전도모드, 과도 응답, 실제 소자의 전압 강하까지 같은 식으로 단정하지 않습니다. <a href="https://www.analog.com/en/resources/app-notes/buck-power-stage-design-equations.html">Analog Devices: Buck Power Stage Design Equations</a></p>
+<h3>CKD, RCD, MDB</h3>
+<p>CKD(Client Clock Driver)는 프로세서에서 온 클록을 재정렬하고 DRAM에 분배합니다. CUDIMM·CSODIMM용 칩셋은 CKD, PMIC, SPD Hub로 구성될 수 있습니다. CKD의 존재를 일반 UDIMM 전체에 확대 적용하지 않습니다. <a href="https://www.rambus.com/memory-interface-chips/ddr5-client-dimm-chipset/">Rambus 클라이언트 칩셋</a></p>
+<p>RCD(Registering Clock Driver)는 명령·주소·클록·제어 신호를 다룹니다. MDB(Multiplexed Data Buffer)는 MRDIMM에서 여러 rank의 데이터를 다중화합니다. 이때 MRCD(Multiplexed Registering Clock Driver)가 다중화에 필요한 제어를 지원합니다. <a href="https://www.rambus.com/blogs/complete-guide-to-ddr5-chipsets/">Rambus DIMM 구성 설명</a></p>
+</section>
+<section id="section-3"><h2>제품별로 확인해야 할 사항</h2>
+<ul>
+<li>DIMM 종류와 부품 번호가 없으므로 특정 모듈의 실제 구성은 확인하지 않았습니다.</li>
+<li>PMIC 입력·출력 전압, 채널 수, 보호 기능은 해당 부품 데이터시트로 확인합니다.</li>
+<li>CKD 동작 모드와 지원 속도는 부품 세대 및 플랫폼에 따라 확인합니다.</li>
+<li>여기서는 MDB를 MRDIMM 문맥으로 해석했습니다. 원래 학습 자료의 약어 정의가 다르면 수정해야 합니다.</li>
+</ul>
+</section>
+<section id="section-4"><h2>내 말로 요약</h2>
+<p>SPD Hub는 모듈 정보와 관리 통신, PMIC는 전원, CKD/RCD는 클록 또는 명령·주소·제어, MDB는 다중화된 데이터를 담당합니다. PMIC와 Buck은 같은 단어가 아니라 IC 전체와 전압 변환 회로의 관계입니다.</p>
+</section>
+<section id="section-5"><h2>복습 질문</h2>
+<ol>
+<li>SPD Hub를 DRAM 데이터 버퍼라고 부르면 왜 부정확한가요?</li>
+<li>PMIC에 Buck이 여러 개 들어갈 수 있는 이유는 무엇인가요?</li>
+<li>RCD와 MDB가 다루는 신호는 어떻게 다른가요?</li>
+<li><code>Vout = D × Vin</code>에 필요한 가정은 무엇인가요?</li>
+</ol>
+</section>
+<footer class="page-footer"><a href="../index.html">전체 목차로</a><a href="fc-area-hier.html">FC 면적 보고서 읽기 →</a><a href="#main">맨 위로 ↑</a></footer>
+</main></body></html>
