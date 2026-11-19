@@ -11,4 +11,9 @@
 
 DDR5 문서는 제조사 공개 자료로 확인한 설명과 제품별 확인 사항을 구분합니다. FC 문서는 실제 보고서와 생성 스크립트가 없으므로 해석 절차와 조건부 예시를 제공합니다. 실제 설계 수치나 비공개 원문은 포함하지 않습니다.
 
-이 폴더는 GitHub에서 읽는 Markdown 기록입니다. 기존 `docs/` 웹사이트에 표시되는 학습 목록과는 별도입니다.
+이 폴더는 Markdown 원문입니다. 웹사이트의 컴퓨터 분야 목차와 검색에서도 같은 내용을 읽을 수 있습니다.
+
+- [DDR5 웹 페이지](https://mjh990406-design.github.io/knowledge/notes/ddr5-dimm.html)
+- [FC 웹 페이지](https://mjh990406-design.github.io/knowledge/notes/fc-area-hier.html)
+
+원문을 수정할 때는 대응하는 `docs/notes/` HTML 페이지에도 반영합니다.
